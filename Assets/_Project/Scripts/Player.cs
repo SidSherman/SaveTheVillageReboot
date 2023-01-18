@@ -2,47 +2,57 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
-[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Rigidbody2D))]
 public class Player : MonoBehaviour
 {
-
-    [SerializeField] private float _goundAcceleration;
-    [SerializeField] private float _rotationSpeed;
-    [SerializeField] private float _airAcceleration;
+    [Header("Movement")]
+    [FormerlySerializedAs("_goundAcceleration")] [SerializeField] private float _goundSpeed;
+    [FormerlySerializedAs("_airAcceleration")] [SerializeField] private float _airSpeed;
     [SerializeField] private float _jumpHeight;
-    [SerializeField] private float _dragCoef;
-    
-    [SerializeField] private GameObject _deathVFX;
-    [SerializeField] private FollowCamera _camera;
-    [SerializeField] private GameObject _root;
 
+    [Header("Components")] 
+    [SerializeField] private PlayerAnimator _playerAnimatorScript;
+    [SerializeField] private AnimationCurve _movementCurve;
+    [SerializeField] private SpriteRenderer _renderer;
+    [SerializeField] private GameObject _deathVFX;
+    [SerializeField] private GameObject _root;
+    [SerializeField] private GroundChecker _groundChecker;
+    [SerializeField] private HealthComponent _healthComponent;
+
+    public HealthComponent HealthComponent => _healthComponent;
+
+    [SerializeField] private GameObject _shootingPoint;
+    [SerializeField] private GameObject _arrow;
+    
     private List<GameObject> _overlappedObjects;
     
-    private Rigidbody _rigidbody;
+    private Rigidbody2D _rigidbody;
     private PlayerControlls _input;
 
     private bool _canMove = true;
-    private bool _isDead = false;
-    private bool _isFalling = false;
+    private bool _isFalling;
     
     private Vector2 _inputDirection;
-    private float _mouseYDelta;
-    
-    public bool IsDead => _isDead;
+   
 
     private void Awake()
     {
-        _rigidbody = GetComponent<Rigidbody>();
+        _rigidbody = GetComponent<Rigidbody2D>();
         
         _input = new PlayerControlls();
-        _input.Ball.Move.performed += MoveInput;
-        _input.Ball.Move.canceled += StopMove;
-        _input.Ball.Jump.started += Jump;
-        _input.Ball.Mouse.performed += RotateInput;
-        _input.Ball.Use.started += UseObjects;
+        _input.Player.Move.performed += MoveInput;
+        _input.Player.Move.canceled += StopMove;
+        _input.Player.Jump.started += Jump;
+        _input.Player.Use.started += UseObjects;
+
+        _input.Player.MeleeAttack.started += MeleeAttacK;
+        _input.Player.RangedAttack.started += RangedAttacK;
+        
+        _healthComponent.onDeath += Death;
     }
 
     private void OnEnable()
@@ -54,93 +64,67 @@ public class Player : MonoBehaviour
     {
         _input.Disable();
     }
-
+    
     private void FixedUpdate()
     {
         if (_canMove)
         {
             Move();
-            Rotate();
         }
+        _isFalling = !_groundChecker.IsTouchTheGround;
+        _playerAnimatorScript.SetGrounded(!_isFalling);
+        _playerAnimatorScript.SetAirSpeedY(_rigidbody.velocity.y);
     }
 
     public void Move()
     {
-        var accelerate = _isFalling ? _airAcceleration : _goundAcceleration;
-
-        var forward = Vector3.ProjectOnPlane(_camera.transform.forward, Vector3.up);
-        var right = Vector3.ProjectOnPlane(_camera.transform.right, Vector3.up);
-
-        var direction = forward.normalized * _inputDirection.y + right.normalized * _inputDirection.x;
-
-        var force = direction * accelerate;
-        
-         //Stop movement if Input is null
-        if (direction.Equals(Vector3.zero))
-        {
-            var newX = _rigidbody.velocity.x > 0 ? - _dragCoef* Time.fixedDeltaTime : _dragCoef* Time.fixedDeltaTime;
-            var newZ = _rigidbody.velocity.z > 0 ? - _dragCoef*  Time.fixedDeltaTime : _dragCoef*  Time.fixedDeltaTime;
-            _rigidbody.velocity = new Vector3(_rigidbody.velocity.x + newX, _rigidbody.velocity.y, _rigidbody.velocity.z +newZ);
-        }
-    
-        _rigidbody.AddForce(force, ForceMode.Acceleration);
-    }
-    
-    public void Rotate()
-    {
-        if (_mouseYDelta > 0)
-        {
-            _camera.RotateCamera(_rotationSpeed, 1);
-            _mouseYDelta--;
-        }
-        else if (_mouseYDelta < 0)
-        {
-            _camera.RotateCamera(_rotationSpeed, -1);
-            _mouseYDelta++;
-        }
-        
-        _camera.MoveCamera(transform.position);
-    }
-    
-    public void RotateInput(InputAction.CallbackContext context)
-    {
-        _mouseYDelta = context.ReadValue<float>();
+        var speed = _isFalling ? _airSpeed : _goundSpeed;
+       
+        _rigidbody.velocity = new Vector2(_movementCurve.Evaluate(_inputDirection.x), _rigidbody.velocity.y);
     }
     
     public void MoveInput(InputAction.CallbackContext context)
     { 
         _inputDirection = context.ReadValue<Vector2>();
+        if (_inputDirection.x > 0)
+        {
+            _renderer.flipX = false;
+        }
+        if (_inputDirection.x < 0)
+        {
+            _renderer.flipX = true;
+        }
+        _playerAnimatorScript.SetAnimatorState(1);
     }
     
     public void StopMove(InputAction.CallbackContext context)
     {
         _inputDirection = Vector2.zero;
+        _playerAnimatorScript.SetAnimatorState(0);
     }
 
     public void Jump(InputAction.CallbackContext context)
     {
         if (!_isFalling)
         {
-            _rigidbody.AddForce(Vector3.up * _jumpHeight, ForceMode.Acceleration);
+            _rigidbody.AddForce(Vector3.up * _jumpHeight, ForceMode2D.Impulse);
         }
+        _playerAnimatorScript.SetJump();
     }
     
     public void Death()
     {
-        _isDead = true;
-
+       
         if(TryGetComponent(out MeshRenderer renderer))
         {
             renderer.enabled = false;
         }
 
-        DeactivateMovement();
-        
         if(TryGetComponent(out Collider collider))
         {
             collider.enabled = false;
         }
-
+        DeactivateMovement();
         Instantiate(_deathVFX, transform.position, transform.rotation);
     }
     
@@ -181,12 +165,31 @@ public class Player : MonoBehaviour
         }
     }
 
-  
-    private void OnCollisionStay(Collision collision)
+    private void MeleeAttacK(InputAction.CallbackContext context)
     {
-        _isFalling = false;
+        int i = Random.Range(1,4);
+        _playerAnimatorScript.SetAttack(i);
     }
     
+    private void RangedAttacK(InputAction.CallbackContext context)
+    {
+        Quaternion arrowRotatin;
+        int direction;
+        if (_renderer.flipX )
+        {
+            direction = -1;
+            arrowRotatin = Quaternion.Euler(0, 0, 180);
+        }
+        else
+        {
+            direction = 1;
+            arrowRotatin = Quaternion.Euler(0, 0, 0);
+        }
+        
+        GameObject arrow = Instantiate(_arrow, _shootingPoint.transform.position, arrowRotatin);
+        arrow.GetComponent<Projectile>().Owner = gameObject;
+        arrow.GetComponent<Projectile>().Push(direction);
+    }
     private void OnCollisionEnter(Collision collision)
     {
         Debug.Log("OnCollisionEnter");
@@ -195,9 +198,7 @@ public class Player : MonoBehaviour
             Debug.Log("DynamicObject");
             var obj = collision.gameObject.GetComponent<DynamicObject>();
                 transform.SetParent(obj.Root);
-
         }
-        _isFalling = false;
     }
     
     private void OnCollisionExit(Collision collision)
@@ -206,8 +207,5 @@ public class Player : MonoBehaviour
         {
             transform.SetParent(_root.transform);
         }
-        
-        _isFalling = true;
     }
-    
 }

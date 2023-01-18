@@ -15,14 +15,7 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1f;
     }
-
-    public void UpdateScore(int value)
-    {
-        _score += value;
-        if(_gameMenu)
-            _gameMenu.UpdateScoreValue(_score);
-    }
-
+    
     public void LoadFinishMessage()
     {
         if(_gameMenu)
