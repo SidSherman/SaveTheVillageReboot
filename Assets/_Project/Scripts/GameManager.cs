@@ -21,4 +21,12 @@ public class GameManager : MonoBehaviour
         if(_gameMenu)
             _gameMenu.UpdateMessage("Finish");
     }
+    
+    public void UpdateScore(int value)
+    {
+        _score +=value;
+        if(_gameMenu)
+            _gameMenu.UpdateCoins(_score);
+    }
+   
 }

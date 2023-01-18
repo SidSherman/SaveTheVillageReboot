@@ -40,13 +40,13 @@ public class InteractiveObject : MonoBehaviour
     public virtual void Activate()
     {
         _isActive = true;
-        Debug.Log("Activate");
+        //Debug.Log("Activate");
     }
     
     public virtual void Deactivate()
     {
         _isActive = false;
-        Debug.Log("Deactivate");
+        //Debug.Log("Deactivate");
     }
     
     private void OnTriggerEnter(Collider other)

@@ -28,6 +28,8 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject _shootingPoint;
     [SerializeField] private GameObject _arrow;
     
+   
+    
     private List<GameObject> _overlappedObjects;
     
     private Rigidbody2D _rigidbody;
@@ -35,9 +37,12 @@ public class Player : MonoBehaviour
 
     private bool _canMove = true;
     private bool _isFalling;
+    private int _arrowCount;
     
     private Vector2 _inputDirection;
-   
+
+    public delegate void IntDelegate(int value);
+    public event IntDelegate onArrowChange;
 
     private void Awake()
     {
@@ -173,8 +178,11 @@ public class Player : MonoBehaviour
     
     private void RangedAttacK(InputAction.CallbackContext context)
     {
+        if (_arrowCount <= 0) return;
+
         Quaternion arrowRotatin;
         int direction;
+        
         if (_renderer.flipX )
         {
             direction = -1;
@@ -189,7 +197,16 @@ public class Player : MonoBehaviour
         GameObject arrow = Instantiate(_arrow, _shootingPoint.transform.position, arrowRotatin);
         arrow.GetComponent<Projectile>().Owner = gameObject;
         arrow.GetComponent<Projectile>().Push(direction);
+        
+        ArrowChange(-1);
     }
+
+    public void ArrowChange(int value)
+    {
+        _arrowCount += value;
+        onArrowChange(_arrowCount);
+    }
+    
     private void OnCollisionEnter(Collision collision)
     {
         Debug.Log("OnCollisionEnter");
@@ -208,4 +225,5 @@ public class Player : MonoBehaviour
             transform.SetParent(_root.transform);
         }
     }
+    
 }
