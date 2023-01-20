@@ -20,9 +20,6 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private static GameManager _gameManager;
     public HealthComponent HealthComponent => _healthComponent;
 
-    [SerializeField] private GameObject _shootingPoint;
-    [SerializeField] private GameObject _arrow;
-    
     private List<GameObject> _overlappedObjects;
     
     private Rigidbody2D _rigidbody;
