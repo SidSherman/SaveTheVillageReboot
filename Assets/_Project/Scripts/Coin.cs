@@ -7,6 +7,7 @@ public class Coin : InteractiveObject
 {
     [SerializeField] private GameManager _gameManager;
     [SerializeField] private GameObject _particleSystem;
+    [SerializeField] private AudioClip _audioClip;
 
     private void Start()
     {

@@ -3,12 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Projectile : MonoBehaviour
+public class Projectile : DamageDealler
 {
     [SerializeField] private Rigidbody2D _rigidbody2D;
     [SerializeField] private float _speed;
     [SerializeField] private float _lifeTime = 5;
-    private GameObject _owner;
 
     public GameObject Owner
     {
@@ -27,8 +26,18 @@ public class Projectile : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.gameObject != _owner)
-            Destroy(gameObject);
+
+        if (collision.gameObject != _owner)
+        {
+            if (!collision.isTrigger)
+            {
+                if (collision.gameObject.TryGetComponent(out HealthComponent healthComponent))
+                {
+                    healthComponent.TakeDamage(_damage);
+                }
+                StartCoroutine(WaitToDestroy(0));
+            }
+        }
     }
 
     private IEnumerator WaitToDestroy(float time)

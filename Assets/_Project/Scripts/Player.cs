@@ -1,59 +1,56 @@
-
-using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Serialization;
-using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Player : MonoBehaviour
 {
-    [Header("Movement")]
-    [FormerlySerializedAs("_goundAcceleration")] [SerializeField] private float _goundSpeed;
-    [FormerlySerializedAs("_airAcceleration")] [SerializeField] private float _airSpeed;
-    [SerializeField] private float _jumpHeight;
-
-    [Header("Components")] 
-    [SerializeField] private PlayerAnimator _playerAnimatorScript;
-    [SerializeField] private AnimationCurve _movementCurve;
-    [SerializeField] private SpriteRenderer _renderer;
-    [SerializeField] private GameObject _deathVFX;
+    
+    
+    [SerializeField] private GameObject _sword;
     [SerializeField] private GameObject _root;
-    [SerializeField] private GroundChecker _groundChecker;
-    [SerializeField] private HealthComponent _healthComponent;
-
-    public HealthComponent HealthComponent => _healthComponent;
-
     [SerializeField] private GameObject _shootingPoint;
     [SerializeField] private GameObject _arrow;
+    [SerializeField] private GameManager _gameManager;
     
-   
     
-    private List<GameObject> _overlappedObjects;
-    
+    private PlayerAnimator _playerAnimatorScript;
+    private SpriteRenderer _renderer;
+    private GroundChecker _groundChecker;
+    private HealthComponent _healthComponent;
+    private PlayerMovementController _playerController;
     private Rigidbody2D _rigidbody;
     private PlayerControlls _input;
-
-    private bool _canMove = true;
+    private List<GameObject> _overlappedObjects;
+    
     private bool _isFalling;
     private int _arrowCount;
     
+    public HealthComponent HealthComponent => _healthComponent;
+    public Rigidbody2D Rigidbody => _rigidbody;
+    public bool IsFalling { get => _isFalling; set => _isFalling = value; }
+    
     private Vector2 _inputDirection;
-
     public delegate void IntDelegate(int value);
     public event IntDelegate onArrowChange;
 
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
+        _playerAnimatorScript = GetComponent<PlayerAnimator>();
+        _renderer = GetComponent<SpriteRenderer>();
+        _groundChecker = GetComponentInChildren<GroundChecker>();
+        _healthComponent = GetComponent<HealthComponent>();
+        _playerController = GetComponent<PlayerMovementController>();
+        _gameManager = FindObjectOfType<GameManager>();
         
         _input = new PlayerControlls();
         _input.Player.Move.performed += MoveInput;
         _input.Player.Move.canceled += StopMove;
         _input.Player.Jump.started += Jump;
         _input.Player.Use.started += UseObjects;
-
+        _input.Game.Pause.started += _gameManager.TogglePauseInput;
         _input.Player.MeleeAttack.started += MeleeAttacK;
         _input.Player.RangedAttack.started += RangedAttacK;
         
@@ -72,31 +69,29 @@ public class Player : MonoBehaviour
     
     private void FixedUpdate()
     {
-        if (_canMove)
-        {
-            Move();
-        }
+        _playerController.Move(_inputDirection);
+        
         _isFalling = !_groundChecker.IsTouchTheGround;
+        
         _playerAnimatorScript.SetGrounded(!_isFalling);
         _playerAnimatorScript.SetAirSpeedY(_rigidbody.velocity.y);
     }
 
-    public void Move()
-    {
-        var speed = _isFalling ? _airSpeed : _goundSpeed;
-       
-        _rigidbody.velocity = new Vector2(_movementCurve.Evaluate(_inputDirection.x), _rigidbody.velocity.y);
-    }
+
     
     public void MoveInput(InputAction.CallbackContext context)
-    { 
+    {
+     
         _inputDirection = context.ReadValue<Vector2>();
+        
         if (_inputDirection.x > 0)
         {
+            _sword.transform.localPosition = new Vector2(1, _sword.transform.localPosition.y);
             _renderer.flipX = false;
         }
         if (_inputDirection.x < 0)
         {
+            _sword.transform.localPosition = new Vector2(-1, _sword.transform.localPosition.y);
             _renderer.flipX = true;
         }
         _playerAnimatorScript.SetAnimatorState(1);
@@ -110,55 +105,59 @@ public class Player : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext context)
     {
-        if (!_isFalling)
-        {
-            _rigidbody.AddForce(Vector3.up * _jumpHeight, ForceMode2D.Impulse);
-        }
+        _playerController.Jump();
         _playerAnimatorScript.SetJump();
     }
     
     public void Death()
     {
-       
-        if(TryGetComponent(out MeshRenderer renderer))
+       _playerAnimatorScript.SetDeath();
+     
+        if(TryGetComponent(out Collider2D collider2D))
         {
-            renderer.enabled = false;
-        }
-
-        if(TryGetComponent(out Collider collider))
-        {
-            collider.enabled = false;
+            collider2D.enabled = false;
         }
         DeactivateMovement();
-        Instantiate(_deathVFX, transform.position, transform.rotation);
+
+        _gameManager.UnsetCameraFollowObject();
+        
+        _input.Disable();
+        
+        _gameManager.Lose();
+        
+        }
+    
+    public void ArrowChange(int value)
+    {
+        _arrowCount += value;
+        onArrowChange(_arrowCount);
     }
     
+    public void OnPush(Vector2 position, float force)
+    {
+        DeactivateMovement();
+        _rigidbody.AddForce(_rigidbody.position - position * force, ForceMode2D.Impulse);
+        if(!_healthComponent.IsDead)
+            StartCoroutine(Stan());
+    }
     public void DeactivateMovement()
     {
-        _canMove = false;
+        _playerController.CanMove = false;
         
-        if(_rigidbody)
-        {
-            _rigidbody.isKinematic = true;
-        }
     }
     
     public void ActivateMovement()
     {
-        _canMove = true;
-        
-        if(_rigidbody)
-        {
-            _rigidbody.isKinematic = false;
-        }
+        _playerController.CanMove = true;
     }
     
     private void UseObjects(InputAction.CallbackContext context)
     {
-        var objects = Physics.OverlapSphere(transform.position, 0.5f);
+        var objects = Physics2D.OverlapCircleAll(transform.position, 0.5f);
         
         foreach (var activeObject in objects)
         {
+          
             if (activeObject.TryGetComponent(out InteractiveObject obj))
             {
                 if (obj.ObjectType == InteractiveObject.InteractiveObjectType.Usable)
@@ -174,6 +173,16 @@ public class Player : MonoBehaviour
     {
         int i = Random.Range(1,4);
         _playerAnimatorScript.SetAttack(i);
+    }
+    private void ActivateSword()
+    {
+        _sword.SetActive(true);
+        _sword.GetComponent<DamageDealler>().ApplyDamage();
+        
+    }
+    private void DeativateSword()
+    {
+        _sword.SetActive(false);
     }
     
     private void RangedAttacK(InputAction.CallbackContext context)
@@ -201,29 +210,28 @@ public class Player : MonoBehaviour
         ArrowChange(-1);
     }
 
-    public void ArrowChange(int value)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        _arrowCount += value;
-        onArrowChange(_arrowCount);
-    }
-    
-    private void OnCollisionEnter(Collision collision)
-    {
-        Debug.Log("OnCollisionEnter");
+
         if (collision.gameObject.CompareTag("DynamicObject"))
         {
-            Debug.Log("DynamicObject");
             var obj = collision.gameObject.GetComponent<DynamicObject>();
                 transform.SetParent(obj.Root);
         }
     }
     
-    private void OnCollisionExit(Collision collision)
+    private void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("DynamicObject"))
         {
             transform.SetParent(_root.transform);
         }
+    }
+
+    private IEnumerator Stan()
+    {
+        yield return new WaitForSeconds(0.5f);
+        ActivateMovement();
     }
     
 }

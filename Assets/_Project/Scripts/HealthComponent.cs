@@ -31,6 +31,9 @@ public class HealthComponent : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
+        if (_isDead)
+            return;
+        
         _currentHealth -= damage;
 
         if (_currentHealth <= 0)

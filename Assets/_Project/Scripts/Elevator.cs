@@ -3,13 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Elevator : InteractiveObject
 {
     [SerializeField] private SliderJoint2D _slider;
     [SerializeField] private bool _shouldActivateAutomatically;
     [SerializeField] private GameObject[] _limits;
+
+    private void  Start()
+    {
+        _slider = GetComponent<SliderJoint2D>();
+    }
+    
     public override void Activate()
     {
         base.Activate();
@@ -18,6 +26,7 @@ public class Elevator : InteractiveObject
         motor2D.maxMotorTorque = 10000;
         _slider.motor = motor2D;
     }
+    
     public override void Deactivate()
     {
         base.Deactivate();
@@ -31,6 +40,7 @@ public class Elevator : InteractiveObject
     {
         if (!_shouldActivateAutomatically)
         {
+            Debug.Log("use elevator");
             base.Use();
         }
     }

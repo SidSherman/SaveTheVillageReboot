@@ -40,13 +40,13 @@ public class Menu : MonoBehaviour
         _audioSource.PlayOneShot(_clickSound);
     }
 
-    public void OpenLevelSelector()
+    public virtual void OpenLevelSelector()
     {
         _levelSelectorPanel.SetActive(true);
         _menuPanel.SetActive(false);
     }
     
-    public void CloseLevelSelector()
+    public virtual void CloseLevelSelector()
     {
         _levelSelectorPanel.SetActive(false);
         _menuPanel.SetActive(true);

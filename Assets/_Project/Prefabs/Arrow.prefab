@@ -11,10 +11,9 @@ GameObject:
   - component: {fileID: 2048213961823272354}
   - component: {fileID: 669204562945335554}
   - component: {fileID: 5709774763330529990}
-  - component: {fileID: 2137406705018761296}
   - component: {fileID: 5132634118572609010}
   - component: {fileID: 2786147186320357999}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Arrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -100,22 +99,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7763d6822760e39459edd63888bdd246, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _damage: 10
+  _owner: {fileID: 0}
   _rigidbody2D: {fileID: 2786147186320357999}
   _speed: 15
   _lifeTime: 5
---- !u!114 &2137406705018761296
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 987083297778883385}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9e73d6453d8af6747a2fb72e2115deff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _damage: 10
 --- !u!61 &5132634118572609010
 BoxCollider2D:
   m_ObjectHideFlags: 0
