@@ -16,7 +16,7 @@ TagManager:
   - Projectile
   - Props
   - Characters
-  - 
+  - Enemy
   - 
   - 
   - 
@@ -50,4 +50,7 @@ TagManager:
     locked: 0
   - name: Water
     uniqueID: 3636304675
+    locked: 0
+  - name: Characters
+    uniqueID: 149136783
     locked: 0

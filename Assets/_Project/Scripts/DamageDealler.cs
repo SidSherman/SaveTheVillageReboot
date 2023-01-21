@@ -9,6 +9,7 @@ public class DamageDealler : MonoBehaviour
     [SerializeField] protected float _force;
     [SerializeField] protected GameObject _owner;
     [SerializeField] protected bool _damageOnTouch = true;
+    [SerializeField] protected int _team ;
 
     public void ApplyDamage()
     {
@@ -16,8 +17,12 @@ public class DamageDealler : MonoBehaviour
                
         foreach (var activeObject in objects)
         {
+            if(activeObject.isTrigger)
+                continue;
             if (activeObject.TryGetComponent(out HealthComponent healthComponent))
             {
+                if (healthComponent.Team == _team)
+                    return;
                 healthComponent.TakeDamage(_damage);
                 if (activeObject.gameObject.TryGetComponent(out Player player))
                 {
@@ -36,6 +41,8 @@ public class DamageDealler : MonoBehaviour
         {
             if (other.gameObject.TryGetComponent(out HealthComponent healthComponent))
             {
+                if (healthComponent.Team == _team)
+                    return;
                 healthComponent.TakeDamage(_damage);
                 if (other.gameObject.TryGetComponent(out Player player))
                 {
@@ -54,6 +61,9 @@ public class DamageDealler : MonoBehaviour
         {
             if (other.gameObject.TryGetComponent(out HealthComponent healthComponent))
             {
+                if (healthComponent.Team == _team)
+                    return;
+                
                 healthComponent.TakeDamage(_damage);
                 if (other.gameObject.TryGetComponent(out Player player))
                 {

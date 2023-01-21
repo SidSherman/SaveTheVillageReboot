@@ -13,6 +13,7 @@ public class Bomb : MonoBehaviour
     [SerializeField] private SpriteRenderer _renderer;
     [SerializeField] private float _damage;
     [SerializeField] private DamageDealler _damageDealler;
+    [SerializeField] private GameObject _explosionVFX;
     private void Start()
     {
          _circleCollider2D = GetComponent<CircleCollider2D>();
@@ -29,7 +30,8 @@ public class Bomb : MonoBehaviour
         _circleCollider2D.radius = _bombRadius;
         _pointEffector2D.forceMagnitude = _explosionForce;
         _renderer.enabled = false;
-   
+
+        Instantiate(_explosionVFX,transform.position, Quaternion.identity);
         StartCoroutine(WaitToDestroy(0.3f));
         
         var objects = Physics2D.OverlapCircleAll(transform.position, _bombRadius);

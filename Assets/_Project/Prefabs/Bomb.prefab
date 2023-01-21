@@ -146,6 +146,7 @@ MonoBehaviour:
   _renderer: {fileID: 3596628126848055001}
   _damage: 50
   _damageDealler: {fileID: 0}
+  _explosionVFX: {fileID: 8194992990867289339, guid: 99bc28c0d45f51c4fbac01080b73edc7, type: 3}
 --- !u!114 &2938784716302931923
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -160,6 +161,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxHealth: 1
   _owner: {fileID: 3596628126848054982}
+  _team: 2
 --- !u!50 &1762233643
 Rigidbody2D:
   serializedVersion: 4
@@ -172,7 +174,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 10000
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1

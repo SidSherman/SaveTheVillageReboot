@@ -27,8 +27,8 @@ public class EnemyController : MonoBehaviour
     private bool _canMove = true;
     private bool _isFalling;
     
-    private int MOVE_RIGHT_STATE = 2;
-    private int MOVE_LEFT_STATE = 3;
+    private int MomeRightState = 2;
+    private int MomeLefttState = 3;
 
     private void Start()
     {
@@ -44,6 +44,11 @@ public class EnemyController : MonoBehaviour
         if (_canMove)
         {
             Move();
+        }
+        else
+        {
+            _rigidbody.velocity =  new Vector2(0f, _rigidbody.velocity.y);
+            
         }
     }
 
@@ -71,13 +76,13 @@ public class EnemyController : MonoBehaviour
         
         float speed = 0;
 
-        if (state == MOVE_LEFT_STATE)
+        if (state == MomeLefttState)
         {
             _renderer.flipX = true;
             speed = _goundSpeed * -1;
         }
 
-        if (state == MOVE_RIGHT_STATE)
+        if (state == MomeRightState)
         {
             _renderer.flipX = false;
             speed = _goundSpeed * 1;
@@ -91,6 +96,8 @@ public class EnemyController : MonoBehaviour
     {
         if (other.gameObject.TryGetComponent(out Wall wall))
         {
+            Debug.Log("Wall");
+            
             StartCoroutine(Wait(_waitTime, state));
         }
   }
@@ -101,13 +108,13 @@ public class EnemyController : MonoBehaviour
         _AnimatorScript.SetAnimatorState(0);
         yield return new WaitForSeconds(time);
 
-        if (currentDirection == MOVE_LEFT_STATE)
+        if (currentDirection == MomeLefttState)
         {
-            state = MOVE_RIGHT_STATE;
+            state = MomeRightState;
         }
-        if (currentDirection == MOVE_RIGHT_STATE)
+        if (currentDirection == MomeRightState)
         {
-            state = MOVE_LEFT_STATE;
+            state = MomeLefttState;
         }
 
         _canMove = true;

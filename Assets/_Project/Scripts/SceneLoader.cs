@@ -21,8 +21,10 @@ public class SceneLoader : MonoBehaviour
     }
     public void NextLevel()
     {
+  
         if (SceneManager.GetSceneByBuildIndex(SceneManager.GetActiveScene().buildIndex + 1).buildIndex == -1)
         {
+            
             SceneManager.LoadScene(0);
            
         }

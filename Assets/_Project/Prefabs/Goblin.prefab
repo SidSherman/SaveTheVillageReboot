@@ -162,6 +162,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxHealth: 10
   _owner: {fileID: 5238924930649013857}
+  _team: 2
 --- !u!114 &3383523698202514455
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -175,22 +176,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _goundSpeed: 3
-  _jumpHeight: 0
   _waitTime: 3
   _AnimatorScript: {fileID: 894940802113901913}
-  _movementCurve:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
   _renderer: {fileID: 7689841858802108806}
   _root: {fileID: 5238924930649013857}
   _healthComponent: {fileID: 8873290401775169602}
   state: 2
-  _damageDealler: {fileID: 0}
-  _shootingPoint: {fileID: 0}
-  _arrow: {fileID: 0}
 --- !u!114 &894940802113901913
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -217,5 +208,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _damage: 25
-  _force: 7
+  _force: 10
   _owner: {fileID: 5238924930649013857}
+  _damageOnTouch: 1
+  _team: 2

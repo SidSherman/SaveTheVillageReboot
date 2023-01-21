@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2018365450437254146}
   - component: {fileID: 1515793881361588757}
   - component: {fileID: 2213089068918022443}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: PF Village Props - Barrel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -73,7 +73,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1813101609
-  m_SortingLayer: 3
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300008, guid: 7810966f0f690954c87305933cabf2b0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

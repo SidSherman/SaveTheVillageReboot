@@ -1422,7 +1422,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2615876875487312421, guid: 9abed6916534af14e8293fe63746cdf7, type: 3}
       propertyPath: m_text
-      value: " 5 \u0443\u0440\u043E\u0432\u0435\u043D\u044C"
+      value: "\u0412 \u0440\u0430\u0437\u0440\u0430\u0431\u043E\u0442\u043A\u0435"
+      objectReference: {fileID: 0}
+    - target: {fileID: 2615876876496046445, guid: 9abed6916534af14e8293fe63746cdf7, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2615876876496046445, guid: 9abed6916534af14e8293fe63746cdf7, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument

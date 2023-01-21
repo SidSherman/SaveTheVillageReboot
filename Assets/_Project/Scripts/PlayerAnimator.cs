@@ -48,4 +48,9 @@ public class PlayerAnimator : MonoBehaviour
         if(value == 3)
             _animator.SetTrigger("Attack3");
     }
+    public void SetHit ()
+    {
+        _animator.SetTrigger("Hit");
+        
+    }
 }

@@ -6,11 +6,13 @@ public class HealthComponent : MonoBehaviour
 {
     [SerializeField] private float _maxHealth;
     [SerializeField] private GameObject _owner;
+    [SerializeField] private int _team;
     
     private bool _isDead = false;
     private float _currentHealth;
     
     public bool IsDead => _isDead;
+    public int Team => _team;
 
     public delegate void VoidDelegate();
     public delegate void FloatDelegate(float value);
