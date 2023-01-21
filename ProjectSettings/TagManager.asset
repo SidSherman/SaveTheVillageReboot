@@ -45,9 +45,9 @@ TagManager:
   - name: Ground
     uniqueID: 1579986441
     locked: 0
-  - name: Water
-    uniqueID: 3636304675
-    locked: 0
   - name: Props
     uniqueID: 1813101609
+    locked: 0
+  - name: Water
+    uniqueID: 3636304675
     locked: 0
