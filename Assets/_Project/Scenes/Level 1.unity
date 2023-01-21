@@ -7559,6 +7559,8 @@ MonoBehaviour:
     - {fileID: 11400000, guid: c3c07fb1d665f24458a747525e18db5c, type: 2}
     - {fileID: 11400000, guid: e144624ed7f6d614bbf0875bd289efff, type: 2}
     - {fileID: 11400000, guid: 846de98e340b1c24ca71d13b95ee9a8f, type: 2}
+    - {fileID: 11400000, guid: a28ca173ea0198d4cb7d1f03010ac675, type: 2}
+    - {fileID: 11400000, guid: f5080874617c92044adccdc5ea31b673, type: 2}
     m_Events:
     - m_PersistentCalls:
         m_Calls:
@@ -7635,6 +7637,34 @@ MonoBehaviour:
         - m_Target: {fileID: 2008144397}
           m_TargetAssemblyTypeName: CutsceneManager, Assembly-CSharp
           m_MethodName: ShowUI
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1408552166}
+          m_TargetAssemblyTypeName: Player, Assembly-CSharp
+          m_MethodName: EnableInput
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1408552166}
+          m_TargetAssemblyTypeName: Player, Assembly-CSharp
+          m_MethodName: DisableInput
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -7835,6 +7865,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1524179876570240713, guid: 7badf4db950675944844e79c3f405c68, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2121730907541063687, guid: 7badf4db950675944844e79c3f405c68, type: 3}
       propertyPath: m_PlayOnAwake
       value: 0

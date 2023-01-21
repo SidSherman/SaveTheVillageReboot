@@ -67,6 +67,8 @@ public class Player : MonoBehaviour
         _input.Disable();
     }
     
+    
+    
     private void FixedUpdate()
     {
         _playerController.Move(_inputDirection);
@@ -131,6 +133,16 @@ public class Player : MonoBehaviour
     {
         _arrowCount += value;
         onArrowChange(_arrowCount);
+    }
+    public void EnableInput()
+     
+    {
+        _input.Enable();
+    }
+    public void DisableInput()
+     
+    {
+        _input.Disable();
     }
     
     public void OnPush(Vector2 position, float force)
