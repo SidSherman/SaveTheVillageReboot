@@ -25,7 +25,10 @@ public class Coin : InteractiveObject
             _gameManager.UpdateScore(1);
         if(_particleSystem)
             Instantiate(_particleSystem, transform.position, transform.rotation);
+        
+        SoundManager.instance.PlaySound(_audioClip);
         Destroy(gameObject);
+        
     }
     
     private void OnTriggerEnter2D(Collider2D other)

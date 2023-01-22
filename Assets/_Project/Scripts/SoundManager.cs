@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +8,14 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioSource _defaultSource;
     [SerializeField] private AudioSource _defaultMusicSource;
     [SerializeField] private AudioListener _defaultListener;
-    
+
+    static public SoundManager instance;
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
     public void PlayStopMusic(bool value)
     {
         switch (value)

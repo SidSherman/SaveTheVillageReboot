@@ -18,6 +18,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private HealthComponent _healthComponent;
     [SerializeField] private int state = 1;
     [SerializeField] private static GameManager _gameManager;
+    [SerializeField] private AudioClip _deathSound;
     public HealthComponent HealthComponent => _healthComponent;
 
     private List<GameObject> _overlappedObjects;
@@ -63,8 +64,9 @@ public class EnemyController : MonoBehaviour
         
         _AnimatorScript.SetDeath();
         _canMove = false;
+        SoundManager.instance.PlaySound(_deathSound);
         GameManager.EnemyKilled = GameManager.EnemyKilled + 1;
-        //_gameManager.EnemyKilled++;
+        
     }
     private void Nothing(float value)
     {

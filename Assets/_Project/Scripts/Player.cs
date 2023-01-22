@@ -13,8 +13,7 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject _shootingPoint;
     [SerializeField] private GameObject _arrow;
     [SerializeField] private GameManager _gameManager;
-    
-    
+
     private PlayerAnimator _playerAnimatorScript;
     private SpriteRenderer _renderer;
     private GroundChecker _groundChecker;
@@ -124,8 +123,9 @@ public class Player : MonoBehaviour
         _gameManager.UnsetCameraFollowObject();
         
         _input.Disable();
-        
+
         _gameManager.Lose();
+        
         
         }
     

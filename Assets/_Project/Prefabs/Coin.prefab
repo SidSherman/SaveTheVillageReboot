@@ -50,7 +50,7 @@ MonoBehaviour:
   _objectType: 0
   _gameManager: {fileID: 0}
   _particleSystem: {fileID: 0}
-  _audioClip: {fileID: 0}
+  _audioClip: {fileID: 8300000, guid: 0ae34433fdcf9e843bc8b7a3d5d3b0ad, type: 3}
 --- !u!212 &4033906697869989718
 SpriteRenderer:
   m_ObjectHideFlags: 0

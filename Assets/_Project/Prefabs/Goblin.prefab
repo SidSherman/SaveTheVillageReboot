@@ -182,6 +182,7 @@ MonoBehaviour:
   _root: {fileID: 5238924930649013857}
   _healthComponent: {fileID: 8873290401775169602}
   state: 2
+  _deathSound: {fileID: 8300000, guid: 8c332c31d4593d844b2a748e5bc7edd0, type: 3}
 --- !u!114 &894940802113901913
 MonoBehaviour:
   m_ObjectHideFlags: 0
